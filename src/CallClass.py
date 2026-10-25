@@ -14,16 +14,42 @@ class Call(Option):
                  kind = "european", 
                  model = "black-scholes", 
                  n_steps = 10, 
+                 B=None, 
+                 barrier_kind=None, 
                  seed = 42):
-        
-        super().__init__(S_0, K, T, q, r, sigma, kind, model, n_steps, seed)
+        super().__init__(S_0, K, T, q, r, sigma, kind, model, n_steps, B, barrier_kind, seed)
 
 
     def ComputePayoffs(self, trajectories : np.array):
         payoffs = None
         if self.kind == "european":
-            payoffs = np.maximum(trajectories[:,-1] - self.K, 0)
-
+            ## is it easier to use the barrier type at the end or at the beginning ??
+            if self.B is None : 
+                payoffs = np.maximum(trajectories[:,-1] - self.K, 0)
+            else : 
+                if self.barrier_kind == "down_and_in":
+                    ## underlying must pass under the barrier to be priced
+                    valid = np.any(payoffs <= self.B, axis = 1)
+                    payoffs = np.maximum(trajectories[:,-1] - self.K, 0)*valid
+                    pass
+                elif self.barrier_kind == "down_and_out":
+                    ## underlying must not pass under the barrier to be priced
+                    valid = np.any(payoffs > self.B, axis = 1)
+                    payoffs = np.maximum(trajectories[:,-1] - self.K, 0)*valid
+                    pass
+                elif self.barrier_kind == "up_and_in":
+                    ## underlying has to go above the barrier
+                    valid = np.any(payoffs >= self.B, axis = 1)
+                    payoffs = np.maximum(trajectories[:,-1] - self.K, 0)*valid
+                    pass
+                elif self.barrier_kind == "up_and_out":
+                    ## underlying must not go above the barrier
+                    valid = np.any(payoffs < self.B, axis = 1)
+                    payoffs = np.maximum(trajectories[:,-1] - self.K, 0)*valid
+                    pass
+                else :
+                    print("Barrier kind is not supported")
+                    raise TypeError
         elif self.kind == "american":
             pass
         elif self.kind == "bermudan":

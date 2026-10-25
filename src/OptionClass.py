@@ -11,6 +11,8 @@ class Option:
                  kind : str = "european", 
                  model : str = "black-scholes", 
                  n_steps : int = 10 ,
+                 B = None,
+                 barrier_kind = None,
                  seed : int = 42):
         self.S_0 = S_0
         self.K = K
@@ -24,6 +26,8 @@ class Option:
         ## if european we need to ask 
         ## in general for different edge cases, multiple conditions will be needed as an addition
         self.n_steps = n_steps
+        self.B = B
+        self.barrier_kind = barrier_kind ## "down_and_in"....
         self.seed = seed
 
 
