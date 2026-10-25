@@ -2,7 +2,16 @@ import numpy as np
 
 class Option:
     ## sert à initialiser tous les points communs entre les options vanilla
-    def __init__(self, S_0 : float = 100, K : float = 100, T : float = 1, q:float = 0.015, r:float = 0.04, sigma:float = 0.1, kind : str = "european", model : str = "black-scholes", n_steps : int = 10 , seed : int = 42):
+    def __init__(self, S_0 : float = 100, 
+                 K : float = 100, 
+                 T : float = 1, 
+                 q:float = 0.015, 
+                 r:float = 0.04, 
+                 sigma:float = 0.1, 
+                 kind : str = "european", 
+                 model : str = "black-scholes", 
+                 n_steps : int = 10 ,
+                 seed : int = 42):
         self.S_0 = S_0
         self.K = K
         self.T = T 
